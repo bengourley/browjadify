@@ -8,13 +8,13 @@ This module is a plugin for browserify to parse the AST for `compileJade()` call
 # Simple Example
 
 main.js
-```
+```js
 var tmpl = compileJade(__dirname + '/a.jade')
 ```
 
 Applying the transform with browserify:
 
-```
+```js
 var browserify = require('browserify')
 
 var b = browserify('main.js')
@@ -24,7 +24,7 @@ b.bundle().pipe(fs.createWriteStream('bundle.js'))
 ```
 
 The line from main.js now looks something like this, depending on the contents of a.jade:
-```
+```js
 var tmpl = function anonymous (locals) {
   //... jade temaplate body here
 }
@@ -40,27 +40,19 @@ your tests can't run.
 To solve this problem, browjadify comes with a fully functioning `compileJade` function. Use it like so:
 
 main.js
-```
+```js
 var compileJade = require('browjadify')
   , tmpl = compileJade(__dirname + '/a.jade')
 ```
 
 To prevent the compiler and its dependencies (i.e jade, which is massive) from being added to the output bundle, the compiler needs to be ignored:
 
-```
+```js
 var b = browserify('main.js')
 b.ignore(require.resolve('browjadify/compile'))
 b.transform(require('browjadify/transform'))
 ```
 
-main.js when bundled will now look like this:
-```
-var compileJade = {}
-  , tmpl = function anonymous (locals) {
-      //... jade temaplate body here
-    }
-```
-
-So pre-bundled it will run happily in node, and post bundle will run happily in the browser.
+Onec bundled, `require('browjadify')` will just resolve to `{}`. So pre-bundle it will run happily in node, and post-bundle will run happily in the browser.
 
 Happy templating!
