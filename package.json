@@ -1,0 +1,21 @@
+{
+  "name": "browjadify",
+  "version": "0.0.0",
+  "description": "Inject compiled jade templates as functions in browserify modules",
+  "main": "compile.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha -R spec"
+  },
+  "repository": "",
+  "author": "Ben Gourley",
+  "license": "BSD",
+  "dependencies": {
+    "through": "~2.3.4",
+    "falafel": "~0.2.1",
+    "escodegen": "0.0.22"
+  },
+  "devDependencies": {
+    "mocha": "~1.9.0",
+    "browserify": "~2.13.3"
+  }
+}
