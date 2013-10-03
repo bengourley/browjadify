@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "mocha": "~1.9.0",
-    "browserify": "~2.13.3"
+    "browserify": "~2.13.3",
+    "jade": "~0.35.0"
   }
 }

@@ -9,5 +9,5 @@ function compile(filename) {
     , compileDebug: false
     , filename: filename
     }
-  return jade.compile(fs.readFileSync(filename), jadeOptions).toString()
+  return jade.compile(fs.readFileSync(filename), jadeOptions)
 }

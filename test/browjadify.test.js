@@ -8,10 +8,11 @@ describe('browjadify', function () {
 
   describe('compile()', function () {
 
-    it('should take a filename and return a string of js', function () {
+    it('should take a filename and return a js function', function () {
       var template = compile(__dirname + '/fixtures/a.jade')
-      assert.equal(typeof template, 'string')
-      assert(/^function anonymous\(locals\) {/.test(template))
+      assert.equal(typeof template, 'function')
+      assert(/^function anonymous\(locals\) {/.test(template.toString()))
+      assert(/^<!DOCTYPE html>/.test(template()))
     })
 
     it('should throw an error when template does not exist', function () {
