@@ -5,20 +5,40 @@ browserify jade template inliner
 This module is a plugin for browserify to parse the AST for `compileJade()` calls so that you can inline compiled jade template contents into your bundles.
 
 
-# Simple Example
+# Example
 
 main.js
 ```js
 var tmpl = compileJade(__dirname + '/a.jade')
 ```
 
-Applying the transform with browserify:
+Applying the transform with the browserify CLI:
+
+```
+browserify . -o bundle.js -t browjadify
+```
+
+Applying the transform with the browserify CLI, but configuring via `package.json`:
+
+```
+browserify . -o bundle.js
+```
+
+```json
+{
+  "browserify": {
+    "transform": [ "browjadify" ]
+  }
+}
+```
+
+Applying the transform with the browserify API:
 
 ```js
 var browserify = require('browserify')
 
 var b = browserify('main.js')
-b.transform(require('browjadify/transform'))
+b.transform('browjadify')
 
 b.bundle().pipe(fs.createWriteStream('bundle.js'))
 ```
@@ -30,29 +50,7 @@ var tmpl = function anonymous (locals) {
 }
 ```
 
-
-# Advanced Example
-
-The simple example is ok, but your linter will complain that `compileJade` is undefined. Also,
-if you intend to unit test your browser code within node, `compileJade` *will* be undefined, meaning
-your tests can't run.
-
-To solve this problem, browjadify comes with a fully functioning `compileJade` function. Use it like so:
-
-main.js
-```js
-var compileJade = require('browjadify')
-  , tmpl = compileJade(__dirname + '/a.jade')
-```
-
-To prevent the compiler and its dependencies (i.e jade, which is massive) from being added to the output bundle, the compiler needs to be ignored:
-
-```js
-var b = browserify('main.js')
-b.ignore(require.resolve('browjadify/compile'))
-b.transform(require('browjadify/transform'))
-```
-
-Onec bundled, `require('browjadify')` will just resolve to `{}`. So pre-bundle it will run happily in node, and post-bundle will run happily in the browser.
+Pre v1 had some weird 'ignore' shit going on avoid the jade compiler from being added
+to your browser bundle. I'm pleased to say that this is now gone!
 
 Happy templating!
