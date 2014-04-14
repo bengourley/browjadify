@@ -1,8 +1,12 @@
 {
   "name": "browjadify",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Inject compiled jade templates as functions in browserify modules",
-  "keywords": [ "browserify-transform", "jade", "browserify" ],
+  "keywords": [
+    "browserify-transform",
+    "jade",
+    "browserify"
+  ],
   "main": "transform.js",
   "scripts": {
     "test": "node_modules/.bin/mocha -R spec"
