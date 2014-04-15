@@ -1,19 +1,28 @@
-var fs = require('fs')
-  , path = require('path')
+module.exports = createTransform
+
+var path = require('path')
   , through = require('through')
   , falafel = require('falafel')
   , compile = require('./compile')
   , unparse = require('escodegen').generate
 
-module.exports = function (file) {
+function createTransform(arg) {
+  // standard usage, no options
+  if (typeof arg === 'string') return transform.call({ options: {} }, arg)
+  // configured usage, returns transform bound with some options
+  return transform.bind({ options: arg })
+}
+
+function transform(file) {
 
   if (!/\.js$/.test(file)) return through()
+  if (this.options.noParse && this.options.noParse.indexOf(file) !== -1) return through()
 
   var data = ''
     , vars = [ '__filename', '__dirname' ]
     , dirname = path.dirname(file)
-    , pending = 0
     , tr = through(write, end)
+    , start = new Date()
 
   return tr
 
@@ -36,6 +45,17 @@ module.exports = function (file) {
   function finish (output) {
     tr.queue(String(output))
     tr.queue(null)
+    var timeTaken = new Date() - start
+    if (timeTaken > 50) {
+      console.warn(
+        [ ''
+        , 'WARNING: browjadify took took ' + timeTaken + 'ms to parse this file…'
+        , file
+        , 'If you don\'t need to parse it for `compileJade()` calls, consider using'
+        , 'the alternative interface to browjadify where you can supply ignore options.'
+        , ''
+        ].join('\n'))
+    }
   }
 
   function parse () {
@@ -50,8 +70,7 @@ module.exports = function (file) {
         var args = node.arguments
           , t = 'return ' + unparse(args[0])
           , fpath = new Function(vars, t)(file, dirname)
-
-        var jade = compile(fpath)
+          , jade = compile(fpath)
         node.update(jade.toString())
 
       }
