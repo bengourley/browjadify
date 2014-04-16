@@ -46,13 +46,13 @@ function transform(file) {
     tr.queue(String(output))
     tr.queue(null)
     var timeTaken = new Date() - start
-    if (timeTaken > 50) {
+    if (timeTaken > 100) {
       console.warn(
         [ ''
         , 'WARNING: browjadify took took ' + timeTaken + 'ms to parse this file…'
         , file
-        , 'If you don\'t need to parse it for `compileJade()` calls, consider using'
-        , 'the alternative interface to browjadify where you can supply ignore options.'
+        , 'If you don\'t need to parse it for `compileJade()` calls, consider using the'
+        , 'alternative interface to browjadify where you can supply the `noParse` option.'
         , ''
         ].join('\n'))
     }
