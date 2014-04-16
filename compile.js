@@ -1,13 +1,18 @@
 module.exports = compile
 
-var jade = require('jade/lib/jade')
+var jade = require('jade')
   , fs = require('fs')
 
 function compile(filename) {
-  var jadeOptions =
-    { client: true
-    , compileDebug: false
-    , filename: filename
-    }
-  return jade.compile(fs.readFileSync(filename), jadeOptions)
+
+  var hasClientFn = 'function' === typeof jade.compileClient
+    , options =
+      { compileDebug: false
+      , filename: filename
+      }
+
+  if (!hasClientFn) options.client = true
+  var fn = jade[hasClientFn ? 'compileClient' : 'compile'](fs.readFileSync(filename), options)
+  return 'string' === typeof fn ? Function('return ' + fn)() : fn
+
 }

@@ -1,8 +1,10 @@
-var compile = require('..')
+var compile = require('../compile')
   , transform = require('../transform')
   , assert = require('assert')
   , browserify = require('browserify')
   , vm = require('vm')
+
+global.jade = require('jade/runtime')
 
 describe('browjadify', function () {
 
@@ -11,7 +13,7 @@ describe('browjadify', function () {
     it('should take a filename and return a js function', function () {
       var template = compile(__dirname + '/fixtures/a.jade')
       assert.equal(typeof template, 'function')
-      assert(/^function anonymous\(locals\) {/.test(template.toString()))
+      assert(/^function (anonymous|template)\(locals/.test(template.toString()))
       assert(/^<!DOCTYPE html>/.test(template()))
     })
 
@@ -29,8 +31,24 @@ describe('browjadify', function () {
 
       var b = browserify();
       b.add(__dirname + '/fixtures/b.js')
-      b.ignore(require.resolve('..'))
       b.transform(transform)
+      b.bundle(function (err, src) {
+        if (err) done(err)
+        vm.runInNewContext(src, { console: { log: log } })
+      })
+
+      function log (msg) {
+        assert.equal('<p>Testy!</p>', msg)
+        done()
+      }
+
+    })
+
+    it('should support configuration with the `createTransform(options)` interface', function (done) {
+
+      var b = browserify();
+      b.add(__dirname + '/fixtures/b.js')
+      b.transform(transform({}))
       b.bundle(function (err, src) {
         if (err) done(err)
         vm.runInNewContext(src, { console: { log: log } })
