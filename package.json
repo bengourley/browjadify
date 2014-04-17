@@ -7,6 +7,9 @@
     "jade",
     "browserify"
   ],
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org"
+  },
   "main": "transform.js",
   "scripts": {
     "test": "node_modules/.bin/mocha -R spec"
