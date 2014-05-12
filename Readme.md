@@ -2,8 +2,8 @@
 
 browserify jade template inliner
 
-This module is a plugin for browserify to parse the AST for `compileJade()` calls so that you can inline compiled jade template contents into your bundles.
-
+This module is a browserify transform which will parse the AST for `compileJade()`
+calls and swap them out for the compiled contents of the jade file that they referenced.
 
 # Example
 
@@ -50,7 +50,27 @@ var tmpl = function anonymous (locals) {
 }
 ```
 
-Pre v1 had some weird 'ignore' shit going on avoid the jade compiler from being added
-to your browser bundle. I'm pleased to say that this is now gone!
+### A note about linting and testing
+
+If you use a linter to check your code for the use of undefined variables, it will
+complain about this `compileJade()` function that you have magicked from nowhere.
+Furthermore, if you want to test your code with node, without browserifying it,
+you can't because the transform will not have been run. These two problems are solved
+by doing the following:
+
+```js
+var compileJade = require('browjadify/compile')
+  , tmpl = compileJade(__dirname + '/a.jade')
+```
+
+By defining `compileJade` you are appeasing your linter. When this gets browserified,
+`browjadify/compile` resolves to a file that throws an error saying that it shouldn't
+ever get called. This is helpful because it means the browjadify transform would
+not have been.
+
+When running this code in node, `browjadify/compile` resolves to a function which
+synchronously compiles some jade, as advertised! This means that you can run this
+code (in unit tests, for instance) without having to browserify and transform it
+first.
 
 Happy templating!
