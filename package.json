@@ -34,5 +34,7 @@
     "istanbul": "^0.2.9",
     "jshint": "^2.5.0"
   },
-  "browser": "./browser.js"
+  "browser": {
+    "./compile.js": "./browser.js"
+  }
 }

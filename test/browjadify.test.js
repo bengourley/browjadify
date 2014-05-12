@@ -3,8 +3,7 @@ var compile = require('../compile')
   , assert = require('assert')
   , browserify = require('browserify')
   , vm = require('vm')
-
-global.jade = require('jade/runtime')
+  , fs = require('fs')
 
 describe('browjadify', function () {
 
@@ -34,7 +33,7 @@ describe('browjadify', function () {
       b.transform(transform)
       b.bundle(function (err, src) {
         if (err) done(err)
-        vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime') })
+        vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime'), window: {} })
       })
 
       function log (msg) {
@@ -51,13 +50,35 @@ describe('browjadify', function () {
       b.transform(transform({}))
       b.bundle(function (err, src) {
         if (err) done(err)
-        vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime') })
+        vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime'), window: {} })
       })
 
       function log (msg) {
         assert.equal('<p>Testy!</p>', msg)
         done()
       }
+
+    })
+
+  })
+
+  describe('package.json', function () {
+
+    it('should resolve browjadify/compile when run in node', function () {
+      assert(require('./fixtures/c-node')(__dirname + '/fixturss/b.jade'))
+    })
+
+    it('should resolve browjadify/compile to browjadify/browser when run in browserify', function (done) {
+
+      var b = browserify();
+      b.add(__dirname + '/fixtures/c-browser.js')
+      b.transform(transform({}))
+      b.bundle(function (err, src) {
+        if (err) done(err)
+        vm.runInNewContext(src, { console: {}, jade: require('jade/lib/runtime'), window: {} })
+        assert.notEqual(-1, src.indexOf(fs.readFileSync(__dirname + '/../browser.js')))
+        done()
+      })
 
     })
 
