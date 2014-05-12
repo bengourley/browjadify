@@ -60,6 +60,8 @@ function transform(file) {
 
   function parse () {
 
+    /* jshint evil:true */
+
     var output = falafel(data, function (node) {
       if (node.type === 'CallExpression' && node.callee.type === 'Identifier' && node.callee.name === 'compileJade') {
 

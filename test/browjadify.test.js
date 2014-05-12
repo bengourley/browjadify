@@ -34,7 +34,7 @@ describe('browjadify', function () {
       b.transform(transform)
       b.bundle(function (err, src) {
         if (err) done(err)
-        vm.runInNewContext(src, { console: { log: log } })
+        vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime') })
       })
 
       function log (msg) {
@@ -51,7 +51,7 @@ describe('browjadify', function () {
       b.transform(transform({}))
       b.bundle(function (err, src) {
         if (err) done(err)
-        vm.runInNewContext(src, { console: { log: log } })
+        vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime') })
       })
 
       function log (msg) {
