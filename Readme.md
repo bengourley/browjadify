@@ -58,17 +58,21 @@ Furthermore, if you want to test your code with node, without browserifying it,
 you can't because the transform will not have been run. These two problems are solved
 by doing the following:
 
+```
+npm i --save browjadify-compile
+```
+
 ```js
-var compileJade = require('browjadify/compile')
+var compileJade = require('browjadify-compile')
   , tmpl = compileJade(__dirname + '/a.jade')
 ```
 
 By defining `compileJade` you are appeasing your linter. When this gets browserified,
-`browjadify/compile` resolves to a function that throws an error if it is called. This
+`browjadify-compile` resolves to a function that throws an error if it is called. This
 is helpful because it will never be called in the browser unless the transform is not
 run – so this will alert you to that issue.
 
-When running this code in node, `browjadify/compile` resolves to a function which
+When running this code in node, `browjadify-compile` resolves to a function which
 synchronously compiles some jade, as advertised! This means that you can run this
 code (in unit tests, for instance) without having to browserify and transform it
 first.
