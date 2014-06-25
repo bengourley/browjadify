@@ -3,7 +3,7 @@ module.exports = createTransform
 var path = require('path')
   , through = require('through')
   , falafel = require('falafel')
-  , compile = require('./compile')
+  , compile = require('browjadify-compile')
   , unparse = require('escodegen').generate
 
 function createTransform(arg) {
