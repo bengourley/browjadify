@@ -1,6 +1,6 @@
 {
   "name": "browjadify",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Inject compiled jade templates as functions in browserify modules",
   "keywords": [
     "browserify-transform",
