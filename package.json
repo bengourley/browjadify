@@ -22,7 +22,7 @@
   "author": "Ben Gourley",
   "license": "BSD",
   "dependencies": {
-    "browjadify-compile": "0.0.1",
+    "browjadify-compile": "0.0.2",
     "escodegen": "0.0.22",
     "falafel": "~0.2.1",
     "through": "~2.3.4"
