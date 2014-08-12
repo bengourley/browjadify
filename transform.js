@@ -23,6 +23,7 @@ function transform(file) {
     , dirname = path.dirname(file)
     , tr = through(write, end)
     , start = new Date()
+    , options = this.options
 
   return tr
 
@@ -46,7 +47,7 @@ function transform(file) {
     tr.queue(String(output))
     tr.queue(null)
     var timeTaken = new Date() - start
-    if (timeTaken > 500 && !this.options.quiet) {
+    if (timeTaken > 500 && !options.quiet) {
       console.warn(
         [ ''
         , 'WARNING: browjadify took ' + timeTaken + 'ms to parse this file…'
