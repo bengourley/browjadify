@@ -42,6 +42,24 @@ describe('browjadify', function () {
 
     })
 
+    it('should emit a file event when it compiles a jade file', function (done) {
+
+      var b = browserify()
+
+      b.add(__dirname + '/fixtures/b.js')
+      b.transform(transform)
+
+      b.pipeline.on('transform', function (tr) {
+        tr.on('file', function (file) {
+          assert(/\/b\.jade$/.test(file))
+          done()
+        })
+      })
+
+      b.bundle()
+
+    })
+
   })
 
   describe('package.json', function () {
@@ -58,7 +76,7 @@ describe('browjadify', function () {
       b.bundle(function (err, src) {
         if (err) done(err)
         vm.runInNewContext(src, { console: {}, jade: require('jade/lib/runtime'), window: {} })
-        assert.notEqual(-1, src.indexOf(fs.readFileSync(require.resolve('browjadify-compile/browser'))))
+        assert.notEqual(-1, ('' + src).indexOf(fs.readFileSync(require.resolve('browjadify-compile/browser'))))
         done()
       })
 

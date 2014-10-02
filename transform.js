@@ -34,7 +34,7 @@ function transform(file) {
   function end () {
     var output
     try {
-      output = parse()
+      output = parse.call(this)
       finish(output)
     } catch (err) {
       this.emit('error', new Error(
@@ -66,18 +66,25 @@ function transform(file) {
     var output = falafel(data, function (node) {
       if (node.type === 'CallExpression' && node.callee.type === 'Identifier' && node.callee.name === 'compileJade') {
 
-        if (node.arguments.length !== 1) {
-          throw new Error('compileJade takes 1 argument')
-        }
+        if (node.arguments.length !== 1) throw new Error('compileJade takes 1 argument')
 
         var args = node.arguments
           , t = 'return ' + unparse(args[0])
           , fpath = new Function(vars, t)(file, dirname)
           , jade = compile(fpath)
+
         node.update(jade.toString())
 
+        // Emit the template file so that bundle watchers (like watchify) include
+        // it in the set of files it watches for changes
+        this.emit('file', fpath)
+
       }
-    })
+
+    }.bind(this))
+
     return output
+
   }
+
 }
