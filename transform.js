@@ -32,7 +32,15 @@ function transform(file) {
   }
 
   function end () {
+
     var output
+
+    // Do a quick regex check to see if it looks like a `compileJade()` function
+    // appears in the file. It's expensive to parse the AST in an app with lots of
+    // files, so checking this first will hopefully prevent some unnecesary slow builds.
+
+    if (!/compileJade(.*)/.test(data)) return finish(output)
+
     try {
       output = parse.call(this)
       finish(output)
@@ -41,6 +49,7 @@ function transform(file) {
         err.toString().replace('Error: ', '') + ' (' + file + ')')
       )
     }
+
   }
 
   function finish (output) {
