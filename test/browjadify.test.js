@@ -42,7 +42,7 @@ describe('browjadify', function () {
 
     })
 
-    it('should emit a file event when it compiles a jade file', function (done) {
+    it('should emit a file event when it finds a jade file', function (done) {
 
       var b = browserify()
 
@@ -53,6 +53,27 @@ describe('browjadify', function () {
         tr.on('file', function (file) {
           assert(/\/b\.jade$/.test(file))
           done()
+        })
+      })
+
+      b.bundle()
+
+    })
+
+    it('should emit a file event for dependent jade files (via include/extend within jade)', function (done) {
+
+      var b = browserify()
+
+      b.add(__dirname + '/fixtures/d.js')
+      b.transform(transform)
+
+      b.pipeline.on('transform', function (tr) {
+        tr.once('file', function (file) {
+          assert(/\/d\.jade$/.test(file))
+          tr.once('file', function (file) {
+            assert(/\/a\.jade$/.test(file))
+            done()
+          })
         })
       })
 

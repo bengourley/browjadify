@@ -78,6 +78,9 @@ function transform(file) {
         // Emit the template file so that bundle watchers (like watchify) include
         // it in the set of files it watches for changes
         this.emit('file', fpath)
+        if (Array.isArray(jade.dependencies)) {
+          jade.dependencies.forEach(function (fpath) { this.emit('file', fpath) }.bind(this))
+        }
 
       }
 
