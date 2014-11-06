@@ -39,7 +39,7 @@ function transform(file) {
     // appears in the file. It's expensive to parse the AST in an app with lots of
     // files, so checking this first will hopefully prevent some unnecesary slow builds.
 
-    if (!/compileJade(.*)/.test(data)) return finish(output)
+    if (!/compileJade(.*)/.test(data)) return finish(data)
 
     try {
       output = parse.call(this)
