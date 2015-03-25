@@ -78,7 +78,15 @@ function transform(file) {
         if (node.arguments.length !== 1) throw new Error('compileJade takes 1 argument')
 
         var args = node.arguments
-          , t = 'return ' + unparse(args[0])
+          , templatePath = unparse(args[0])
+          , isAbsolutePath = /^(__dirname|__filename|["']\/)/.test(templatePath.trim())
+
+        // prefix the baseDir to relative compileJade() paths
+        if (options.baseDir && !isAbsolutePath) {
+          templatePath = '\'' + path.join(options.baseDir, templatePath.replace(/^["']|["']$/g, '')) + '\''
+        }
+
+        var t = 'return ' + templatePath
           , fpath = new Function(vars, t)(file, dirname)
           , jade = compile(fpath)
 
