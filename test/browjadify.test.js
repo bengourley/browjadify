@@ -81,6 +81,81 @@ describe('browjadify', function () {
 
     })
 
+    describe('baseDir option', function () {
+
+      it('should prefix the baseDir when a relative path is found', function (done) {
+
+        var b = browserify()
+        b.add(__dirname + '/fixtures/e.js')
+        b.transform(transform({ baseDir: __dirname + '/fixtures/e' }))
+        b.bundle(function (err, src) {
+          if (err) done(err)
+          vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime'), window: {} })
+        })
+
+        function log (msg) {
+          assert.equal('<p>Testy!</p>', msg)
+          done()
+        }
+
+      })
+
+      it('should allow files to have quotes in their names', function (done) {
+
+        var b = browserify()
+        b.add(__dirname + '/fixtures/h.js')
+        b.transform(transform({ baseDir: __dirname + '/fixtures/h' }))
+        b.bundle(function (err, src) {
+          if (err) done(err)
+          vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime'), window: {} })
+        })
+
+        function log (msg) {
+          assert.equal('<p>Testy!</p>', msg)
+          done()
+        }
+
+      })
+
+      it('should not use the baseDir when __dirname + "/path" is used', function (done) {
+
+        var b = browserify()
+        b.add(__dirname + '/fixtures/f.js')
+        b.transform(transform({ baseDir: __dirname + '/fixtures/f' }))
+        b.bundle(function (err, src) {
+          if (err) done(err)
+          vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime'), window: {} })
+        })
+
+        function log (msg) {
+          assert.equal('<p>Testy!</p>', msg)
+          done()
+        }
+
+      })
+
+      it('should not use the baseDir when an absolute path is used', function (done) {
+
+        var b = browserify()
+          , template = fs.createReadStream(__dirname + '/fixtures/g.jade')
+          , tmpTemplate = fs.createWriteStream('/tmp/g.jade')
+
+        template.pipe(tmpTemplate)
+
+        b.add(__dirname + '/fixtures/g.js')
+        b.transform(transform({ baseDir: __dirname + '/fixtures/g' }))
+        b.bundle(function (err, src) {
+          if (err) done(err)
+          vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime'), window: {} })
+        })
+
+        function log (msg) {
+          assert.equal('<p>Testy!</p>', msg)
+          done()
+        }
+
+      })
+    })
   })
 
   describe('package.json', function () {
