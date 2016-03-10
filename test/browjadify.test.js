@@ -83,6 +83,23 @@ describe('browjadify', function () {
 
   })
 
+  it('should resolve an expression containing `path` when used as the argument to compileJade()', function (done) {
+
+    var b = browserify();
+    b.add(__dirname + '/fixtures/e.js')
+    b.transform(transform)
+    b.bundle(function (err, src) {
+      if (err) done(err)
+      vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime'), window: {} })
+    })
+
+    function log (msg) {
+      assert.equal('<p>Testy!</p>', msg)
+      done()
+    }
+
+  })
+
   describe('package.json', function () {
 
     it('should resolve browjadify/compile when run in node', function () {

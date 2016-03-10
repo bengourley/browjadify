@@ -19,7 +19,6 @@ function transform(file) {
   if (this.options.noParse && this.options.noParse.indexOf(file) !== -1) return through()
 
   var data = ''
-    , vars = [ '__filename', '__dirname' ]
     , dirname = path.dirname(file)
     , tr = through(write, end)
     , start = new Date()
@@ -77,18 +76,20 @@ function transform(file) {
 
         if (node.arguments.length !== 1) throw new Error('compileJade takes 1 argument')
 
-        var args = node.arguments
-          , t = 'return ' + unparse(args[0])
-          , fpath = new Function(vars, t)(file, dirname)
-          , jade = compile(fpath)
+        // Create and eval a function to resolve the expression that was passed into `compileJade(expr)`
+        // e.g. `compileJade(path.join(__dirname, '/template.jade'))`
+        var body = 'return ' + unparse(node.arguments)
+          , args = [ '__filename', '__dirname', 'path' ]
+          , resolvedFilePath = new Function(args, body)(file, dirname, path)
+          , jade = compile(resolvedFilePath)
 
         node.update(jade.toString())
 
         // Emit the template file so that bundle watchers (like watchify) include
         // it in the set of files it watches for changes
-        this.emit('file', fpath)
+        this.emit('file', resolvedFilePath)
         if (Array.isArray(jade.dependencies)) {
-          jade.dependencies.forEach(function (fpath) { this.emit('file', fpath) }.bind(this))
+          jade.dependencies.forEach(function (file) { this.emit('file', file) }.bind(this))
         }
 
       }
