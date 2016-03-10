@@ -78,7 +78,7 @@ function transform(file) {
 
         // Create and eval a function to resolve the expression that was passed into `compileJade(expr)`
         // e.g. `compileJade(path.join(__dirname, '/template.jade'))`
-        var body = 'return ' + unparse(node.arguments)
+        var body = 'return ' + unparse(node.arguments[0])
           , args = [ '__filename', '__dirname', 'path' ]
           , resolvedFilePath = new Function(args, body)(file, dirname, path)
           , jade = compile(resolvedFilePath)
