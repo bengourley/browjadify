@@ -45,7 +45,6 @@ function transform(file) {
       output = parse.call(this)
       finish(output)
     } catch (err) {
-      console.log(err)
       this.emit('error', new Error(
         err.toString().replace('Error: ', '') + ' (' + file + ')')
       )
