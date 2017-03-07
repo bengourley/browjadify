@@ -1,6 +1,7 @@
 module.exports = createTransform
 
 var path = require('path')
+  , join = require('path').join
   , through = require('through')
   , falafel = require('falafel')
   , compile = require('browjadify-compile')
@@ -44,6 +45,7 @@ function transform(file) {
       output = parse.call(this)
       finish(output)
     } catch (err) {
+      console.log(err)
       this.emit('error', new Error(
         err.toString().replace('Error: ', '') + ' (' + file + ')')
       )
@@ -79,8 +81,8 @@ function transform(file) {
         // Create and eval a function to resolve the expression that was passed into `compileJade(expr)`
         // e.g. `compileJade(path.join(__dirname, '/template.jade'))`
         var body = 'return ' + unparse(node.arguments[0])
-          , args = [ '__filename', '__dirname', 'path' ]
-          , resolvedFilePath = new Function(args, body)(file, dirname, path)
+          , args = [ '__filename', '__dirname', 'path', 'join' ]
+          , resolvedFilePath = new Function(args, body)(file, dirname, path, join)
           , jade = compile(resolvedFilePath)
 
         node.update(jade.toString())
