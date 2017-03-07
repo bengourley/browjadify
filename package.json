@@ -23,16 +23,16 @@
   "license": "BSD",
   "dependencies": {
     "browjadify-compile": "^0.1.0",
-    "escodegen": "0.0.22",
-    "falafel": "^1.2.0",
-    "through": "~2.3.4"
+    "escodegen": "^1.8.1",
+    "falafel": "^2.0.0",
+    "through": "^2.3.8"
   },
   "devDependencies": {
-    "browserify": "^5.12.1",
-    "istanbul": "^0.2.9",
-    "jade": "~1.9.2",
-    "jshint": "^2.5.0",
+    "browserify": "^14.1.0",
+    "istanbul": "^0.4.5",
+    "jade": "^1.11.0",
+    "jshint": "^2.9.4",
     "jshint-full-path": "^1.1.1",
-    "mocha": "~1.9.0"
+    "mocha": "^3.2.0"
   }
 }
