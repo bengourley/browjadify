@@ -25,6 +25,24 @@ describe('browjadify', function () {
 
     })
 
+    it('should inject compiled templates in place of `compileJade(path)` when es6 is present', function (done) {
+
+      var b = browserify();
+      b.add(__dirname + '/fixtures/es6.js')
+      b.transform(transform)
+      b.bundle(function (err, src) {
+        if (err) done(err)
+        vm.runInNewContext(src, { console: { log: log }, jade: require('jade/lib/runtime'), window: {} })
+      })
+
+      function log (msg) {
+        assert.equal('<p>Testy!es6!</p>', msg)
+        done()
+      }
+
+    })
+
+
     it('should support configuration with the `createTransform(options)` interface', function (done) {
 
       var b = browserify();
